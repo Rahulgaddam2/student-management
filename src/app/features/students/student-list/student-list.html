@@ -1,0 +1,86 @@
+<section>
+  <h2>Students</h2>
+
+  <a routerLink="/students/new">Add student</a>
+
+  @if (successMessage()) {
+    <p>{{ successMessage() }}</p>
+  }
+
+  <!-- I use the state to decide whether to show loading, an error, or records. -->
+  @if (state$ | async; as state) {
+    @switch (state.status) {
+      @case ('loading') {
+        <p>Loading students…</p>
+      }
+
+      @case ('error') {
+        <p>{{ state.message }}</p>
+        <button type="button" (click)="retry()">Retry</button>
+      }
+
+      @case ('success') {
+        @if (state.rows.length === 0) {
+          <p>No students have been added yet.</p>
+        } @else {
+          <table>
+            <thead>
+              <tr>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Enrolled courses</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+
+            <tbody>
+              @for (row of state.rows; track row.student.id) {
+                <tr>
+                  <td>{{ row.student.name }}</td>
+                  <td>{{ row.student.email }}</td>
+                  <td>
+                    @if (row.courseNames.length === 0) {
+                      No courses selected
+                    } @else {
+                      <ul>
+                        @for (name of row.courseNames; track $index) {
+                          <li>{{ name }}</li>
+                        }
+                      </ul>
+                    }
+                  </td>
+                  <td>
+                    <a [routerLink]="['/students', row.student.id, 'edit']">
+                      Edit
+                    </a>
+
+                    <button
+                      type="button"
+                      [disabled]="deleting()"
+                      (click)="requestDelete(row.student)"
+                    >
+                      Delete
+                    </button>
+                  </td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        }
+      }
+    }
+  }
+
+  <!-- I reuse the same dialog used by the course list. -->
+  @if (selectedStudent(); as student) {
+    <app-confirm-dialog
+      title="Delete student?"
+      [message]="'Delete ' + student.name + '?'"
+      confirmLabel="Delete"
+      [busy]="deleting()"
+      [errorMessage]="deleteError()"
+      (confirmed)="confirmDelete()"
+      (cancelled)="cancelDelete()"
+    />
+  }
+</section>

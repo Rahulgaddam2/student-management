@@ -1,0 +1,19 @@
+<dialog #dialog (cancel)="handleCancel($event)">
+  <h2>{{ title() }}</h2>
+  <p>{{ message() }}</p>
+
+  @if (errorMessage()) {
+    <p class="error">{{ errorMessage() }}</p>
+  }
+
+  <!-- I disable both actions while the parent's request is running. -->
+  <div class="dialog-actions">
+    <button type="button" [disabled]="busy()" (click)="cancel()">
+      Cancel
+    </button>
+
+    <button type="button" [disabled]="busy()" (click)="confirm()">
+      {{ busy() ? 'Please wait…' : confirmLabel() }}
+    </button>
+  </div>
+</dialog>

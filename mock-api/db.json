@@ -1,0 +1,51 @@
+{
+  "students": [
+    {
+      "id": "1",
+      "name": "Rahul",
+      "email": "rahul@gamil.com",
+      "courseIds": [
+        "1001"
+      ]
+    },
+    {
+      "name": "priya",
+      "email": "priya@example.com",
+      "courseIds": [
+        "1001",
+        "1002"
+      ],
+      "id": "shecA_Cp7wA"
+    },
+    {
+      "name": "Bunny",
+      "email": "bunny@gmail.com",
+      "courseIds": [
+        "1001",
+        "sBKDq8wgai8"
+      ],
+      "id": "1stGsq6w3b0"
+    }
+  ],
+  "courses": [
+    {
+      "id": "1001",
+      "code": "CS101",
+      "name": "Introduction to Programming",
+      "description": "Learn programming fundamentals with practical examples."
+    },
+    {
+      "id": "1002",
+      "code": "DB101",
+      "name": "Database Fundamentals",
+      "description": "Learn tables, relationships, and basic SQL."
+    },
+    {
+      "code": "CS102",
+      "name": "Data Structures",
+      "description": "Study lists, stacks, queues, and trees.",
+      "id": "sBKDq8wgai8"
+    }
+  ],
+  "$schema": "./node_modules/json-server/schema.json"
+}

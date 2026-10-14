@@ -1,0 +1,60 @@
+<section>
+  <h2>{{ courseId() === null ? 'Add course' : 'Edit course' }}</h2>
+
+  @if (loading()) {
+    <p>Loading course…</p>
+  } @else if (loadError()) {
+    <p class="error">{{ loadError() }}</p>
+    <a routerLink="/courses">Back to courses</a>
+  } @else {
+    <!-- I connect the HTML inputs to the form defined in TypeScript. -->
+    <form [formGroup]="form" (ngSubmit)="submit()" novalidate>
+      <!-- I disable editing and repeated submission while saving. -->
+      <fieldset [disabled]="saving()">
+        <legend>Course details</legend>
+
+        <label for="course-code">Course code</label>
+        <input id="course-code" type="text" formControlName="code" />
+
+        @if (form.controls.code.touched && form.controls.code.invalid) {
+          <p class="error">
+            Use up to 20 characters: letters, numbers, or hyphens.
+          </p>
+        }
+
+        <label for="course-name">Course name</label>
+        <input id="course-name" type="text" formControlName="name" />
+
+        @if (form.controls.name.touched && form.controls.name.invalid) {
+          <p class="error">Enter a course name with up to 100 characters.</p>
+        }
+
+        <label for="course-description">Description</label>
+        <textarea
+          id="course-description"
+          rows="4"
+          formControlName="description"
+        ></textarea>
+
+        @if (
+          form.controls.description.touched &&
+          form.controls.description.invalid
+        ) {
+          <p class="error">Keep the description within 500 characters.</p>
+        }
+
+        <button type="submit">
+          {{ saving() ? 'Saving…' : 'Save course' }}
+        </button>
+      </fieldset>
+
+      @if (errorMessage()) {
+        <p class="error">{{ errorMessage() }}</p>
+      }
+
+      @if (!saving()) {
+        <a routerLink="/courses">Back to courses</a>
+      }
+    </form>
+  }
+</section>

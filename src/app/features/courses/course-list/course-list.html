@@ -1,0 +1,77 @@
+<section>
+  <h2>Courses</h2>
+
+  <a routerLink="/courses/new">Add course</a>
+
+  @if (successMessage()) {
+    <p>{{ successMessage() }}</p>
+  }
+
+  <!-- I subscribe once and reuse the emitted state inside this block. -->
+  @if (state$ | async; as state) {
+    @switch (state.status) {
+      @case ('loading') {
+        <p>Loading courses…</p>
+      }
+
+      @case ('error') {
+        <p>{{ state.message }}</p>
+        <button type="button" (click)="retry()">Retry</button>
+      }
+
+      @case ('success') {
+        @if (state.courses.length === 0) {
+          <p>No courses have been added yet.</p>
+        } @else {
+          <table>
+            <thead>
+              <tr>
+                <th>Code</th>
+                <th>Name</th>
+                <th>Description</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+
+            <tbody>
+              <!-- I track rows by ID so Angular can identify each course. -->
+              @for (course of state.courses; track course.id) {
+                <tr>
+                  <td>{{ course.code }}</td>
+                  <td>{{ course.name }}</td>
+                  <td>{{ course.description }}</td>
+                  <td>
+                    <a [routerLink]="['/courses', course.id, 'edit']">
+                      Edit
+                    </a>
+
+                    <button
+                      type="button"
+                      [disabled]="deleting()"
+                      (click)="requestDelete(course)"
+                    >
+                      Delete
+                    </button>
+                  </td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        }
+      }
+    }
+  }
+
+  <!-- I pass dialog inputs down and handle its decision through outputs. -->
+  @if (selectedCourse(); as course) {
+    <app-confirm-dialog
+      title="Delete course?"
+      [message]="'Delete ' + course.name + '?'"
+      confirmLabel="Delete"
+      [busy]="deleting()"
+      [errorMessage]="deleteError()"
+      (confirmed)="confirmDelete()"
+      (cancelled)="cancelDelete()"
+    />
+  }
+</section>

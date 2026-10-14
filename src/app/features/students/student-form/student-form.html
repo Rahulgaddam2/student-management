@@ -1,0 +1,94 @@
+<section>
+  <h2>{{ studentId() === null ? 'Add student' : 'Edit student' }}</h2>
+
+  @if (loading()) {
+    <p>Loading student form…</p>
+  } @else if (loadError()) {
+    <p class="error">{{ loadError() }}</p>
+    <a routerLink="/students">Back to students</a>
+  } @else {
+    <form [formGroup]="form" (ngSubmit)="submit()" novalidate>
+      <fieldset [disabled]="saving()">
+        <legend>Student information</legend>
+
+        <!-- I use normal buttons here so changing tabs does not submit. -->
+        <div class="form-tabs">
+          <button
+            type="button"
+            [class.active]="activeTab() === 'details'"
+            (click)="requestTab('details')"
+          >
+            Details
+          </button>
+
+          <button
+            type="button"
+            [class.active]="activeTab() === 'enrollment'"
+            (click)="requestTab('enrollment')"
+          >
+            Enrollment
+          </button>
+        </div>
+
+        <!-- I hide the panel without removing its fields from the page. -->
+        <div [hidden]="activeTab() !== 'details'">
+          <label for="student-name">Name</label>
+          <input id="student-name" type="text" formControlName="name" />
+
+          @if (form.controls.name.touched && form.controls.name.invalid) {
+            <p class="error">Enter a name with up to 100 characters.</p>
+          }
+
+          <label for="student-email">Email</label>
+          <input id="student-email" type="email" formControlName="email" />
+
+          @if (form.controls.email.touched && form.controls.email.invalid) {
+            <p class="error">Enter a valid email address.</p>
+          }
+        </div>
+
+        <div [hidden]="activeTab() !== 'enrollment'">
+          <p>Select the student's courses.</p>
+
+          <!-- I connect each checkbox to its course ID in the form array. -->
+          @for (course of courses(); track course.id) {
+            <label>
+              <input
+                #checkbox
+                type="checkbox"
+                [checked]="form.controls.courseIds.value.includes(course.id)"
+                (change)="toggleCourse(course.id, checkbox.checked)"
+              />
+              {{ course.code }} — {{ course.name }}
+            </label>
+          } @empty {
+            <p>No courses available.</p>
+          }
+        </div>
+
+        <button type="submit">
+          {{ saving() ? 'Saving…' : 'Save student' }}
+        </button>
+      </fieldset>
+
+      @if (errorMessage()) {
+        <p class="error">{{ errorMessage() }}</p>
+      }
+
+      @if (!saving()) {
+        <a routerLink="/students">Back to students</a>
+      }
+    </form>
+  }
+
+  <!-- I reuse the dialog to confirm the requested tab change. -->
+  @if (pendingTab() !== null) {
+    <app-confirm-dialog
+      title="Switch tab?"
+      message="Your changes aren't saved yet. Continue to the other tab?"
+      confirmLabel="Continue"
+      (confirmed)="resolveTab(true)"
+      (cancelled)="resolveTab(false)"
+    />
+  }
+</section>

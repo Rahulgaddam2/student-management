@@ -1,0 +1,29 @@
+:host {
+  display: block;
+  max-width: 75rem;
+  margin: 0 auto;
+  padding: 1.5rem;
+}
+
+header {
+  margin-bottom: 2rem;
+}
+
+nav {
+  display: flex;
+  gap: 0.75rem;
+}
+
+nav a {
+  padding: 0.625rem 1rem;
+  border: 1px solid #cbd5e1;
+  border-radius: 0.375rem;
+  color: #172033;
+  text-decoration: none;
+}
+
+nav a.active {
+  background: #1d4ed8;
+  border-color: #1d4ed8;
+  color: white;
+}

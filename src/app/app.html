@@ -1,0 +1,19 @@
+<header>
+  <h1>{{ title() }}</h1>
+
+  <!-- I use router links to switch screens without reloading the whole app. -->
+  <nav>
+    <a routerLink="/students" routerLinkActive="active">
+      Students
+    </a>
+
+    <a routerLink="/courses" routerLinkActive="active">
+      Courses
+    </a>
+  </nav>
+</header>
+
+<main>
+  <!-- I display the component selected by the current route here. -->
+  <router-outlet />
+</main>
